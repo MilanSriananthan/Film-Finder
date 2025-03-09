@@ -1,5 +1,4 @@
 import Login from "./pages/Login";
-import SignUpPage from "./pages/SignUpPage";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import {
