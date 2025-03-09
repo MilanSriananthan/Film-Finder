@@ -17,7 +17,7 @@ function Logout() {
 }
 
 function RegisterAndLogout() {
-  localStorage.clear();
+  //localStorage.clear();
   return <Navigate to="/signup"></Navigate>;
 }
 
