@@ -16,7 +16,7 @@ const navigation = [
   { name: "WatchList", href: "/WatchList" },
 ];
 
-function classNames(...classes) {
+function classNames(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -138,9 +138,9 @@ export default function NavBar() {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? "page" : undefined}
+              aria-current={currentPath ? "page" : undefined}
               className={classNames(
-                item.current
+                currentPath
                   ? "bg-gray-900 text-white"
                   : "text-gray-300 hover:bg-gray-700 hover:text-white",
                 "block rounded-md px-3 py-2 text-base font-medium"

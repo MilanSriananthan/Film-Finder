@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export interface ImageCardProps {
   imageUrl: string;
   title: string;
