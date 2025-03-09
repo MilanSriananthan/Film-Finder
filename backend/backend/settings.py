@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(conn_max_age=600, ssl_require=True)
+    "default": dj_database_url.config(default='postgresql://filmfinderdb_user:FyljR7ewtejfvPkW2YGTSFL33sOeA1dJ@dpg-cv6vvvrtq21c73dmtra0-a.oregon-postgres.render.com/filmfinderdb', conn_max_age=600, ssl_require=True)
 }
 
 
