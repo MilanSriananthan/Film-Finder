@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-(zd4z5&%1t4&gzmr9ayn4-_&a5#-$us+&r-&p0@&rmrosbixwh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["milanfilmfinder.onrender.com"]
+ALLOWED_HOSTS = ["milanfilmfinder.onrender.com", 'film-finder-8twk.onrender.com']
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
