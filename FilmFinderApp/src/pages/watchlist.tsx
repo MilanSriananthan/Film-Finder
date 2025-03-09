@@ -14,7 +14,7 @@ export default function Watchlist() {
 
   useEffect(() => {
     fetch(
-      "https://film-finder-8twk.onrender.com//api/movies/?preference=watch_later",
+      "https://film-finder-8twk.onrender.com/api/movies/?preference=watch_later",
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access")}`, // Adjust based on auth
