@@ -10,16 +10,17 @@ import {
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Watchlist from "./pages/watchlist";
+import SignUpPage from "./pages/SignUpPage";
 
 function Logout() {
   localStorage.clear();
   return <Navigate to="/login"></Navigate>;
 }
 
-function RegisterAndLogout() {
-  //localStorage.clear();
-  return <Navigate to="/signup"></Navigate>;
-}
+//function RegisterAndLogout() {
+//localStorage.clear();
+// return <Navigate to="/signup"></Navigate>;
+//}
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/logout" element={<Logout></Logout>}></Route>
-          <Route path="/signup" element={<RegisterAndLogout />}></Route>
+          <Route path="/signup" element={<SignUpPage></SignUpPage>}></Route>
           <Route path="/watchlist" element={<Watchlist></Watchlist>}></Route>
           <Route
             path="/"
