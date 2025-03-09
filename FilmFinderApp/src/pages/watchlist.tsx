@@ -13,11 +13,14 @@ export default function Watchlist() {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/movies/?preference=watch_later", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`, // Adjust based on auth
-      },
-    })
+    fetch(
+      "https://film-finder-8twk.onrender.com//api/movies/?preference=watch_later",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`, // Adjust based on auth
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => setMovies(data))
       .catch((err) => console.error("Error fetching watchlist movies:", err));
