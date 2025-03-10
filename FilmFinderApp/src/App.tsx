@@ -9,8 +9,8 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
-import watchlist from "./pages/watchlist";
 import SignUpPage from "./pages/SignUpPage";
+import Watchlist from "./pages/Watchlist";
 
 function Logout() {
   localStorage.clear();
@@ -30,7 +30,7 @@ function App() {
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/logout" element={<Logout></Logout>}></Route>
           <Route path="/signup" element={<SignUpPage></SignUpPage>}></Route>
-          <Route path="/watchlist" element={<watchlist></watchlist>}></Route>
+          <Route path="/watchlist" element={<Watchlist></Watchlist>}></Route>
           <Route
             path="/"
             element={
