@@ -19,7 +19,7 @@ function Logout() {
 
 //function RegisterAndLogout() {
 //localStorage.clear();
-// return <Navigate to="/signup"></Navigate>;
+// return <Naviggate to="/signup"></Navigate>;
 //}
 
 function App() {
