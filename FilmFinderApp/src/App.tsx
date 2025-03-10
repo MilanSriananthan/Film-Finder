@@ -10,7 +10,7 @@ import {
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SignUpPage from "./pages/SignUpPage";
-import Watchlist from "./pages/Watchlist";
+import ListWatch from "./pages/ListWatch";
 
 function Logout() {
   localStorage.clear();
@@ -30,7 +30,7 @@ function App() {
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/logout" element={<Logout></Logout>}></Route>
           <Route path="/signup" element={<SignUpPage></SignUpPage>}></Route>
-          <Route path="/watchlist" element={<Watchlist></Watchlist>}></Route>
+          <Route path="/watchlist" element={<ListWatch></ListWatch>}></Route>
           <Route
             path="/"
             element={

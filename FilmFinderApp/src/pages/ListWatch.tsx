@@ -9,7 +9,7 @@ interface Movie {
   release_date: string;
 }
 
-export default function Watchlist() {
+export default function ListWatch() {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
