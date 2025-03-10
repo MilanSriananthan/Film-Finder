@@ -30,7 +30,14 @@ function App() {
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/logout" element={<Logout></Logout>}></Route>
           <Route path="/signup" element={<SignUpPage></SignUpPage>}></Route>
-          <Route path="/watchlist" element={<ListWatch></ListWatch>}></Route>
+          <Route
+            path="/watchlist"
+            element={
+              <ProtectedRoute>
+                <ListWatch></ListWatch>
+              </ProtectedRoute>
+            }
+          ></Route>
           <Route
             path="/"
             element={
