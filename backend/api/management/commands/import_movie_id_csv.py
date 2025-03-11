@@ -15,14 +15,23 @@ class Command(BaseCommand):
             return
 
         df = pd.read_csv(csv_path)
-        
-        for _, row in df.iterrows():
-            MovieIDs.objects.update_or_create(
-                movie_id=row["movieId"],
-                defaults={
-                    "imdb_id": row["imdbId"],
-                    "tmdb_id": row["tmdbId"]
-                },
-            )
 
-        self.stdout.write(self.style.SUCCESS("Movie IDs imported successfully!"))
+        # Clear the table (remove all existing records)
+        MovieIDs.objects.all().delete()
+
+        # Prepare list for bulk insert
+        bulk_create_objs = []
+
+        for _, row in df.iterrows():
+            movie_id = row["movieId"]
+            imdb_id = row["imdbId"]
+            tmdb_id = row["tmdbId"]
+            
+            # Add the new record to the bulk insert list
+            bulk_create_objs.append(MovieIDs(movie_id=movie_id, imdb_id=imdb_id, tmdb_id=tmdb_id))
+
+        # Perform bulk insert
+        if bulk_create_objs:
+            MovieIDs.objects.bulk_create(bulk_create_objs)
+
+        self.stdout.write(self.style.SUCCESS(f"Movie IDs imported successfully!"))
