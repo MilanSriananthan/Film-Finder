@@ -29,9 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(zd4z5&%1t4&gzmr9ayn4-_&a5#-$us+&r-&p0@&rmrosbixwh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["milanfilmfinder.onrender.com", 'film-finder-8twk.onrender.com']
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -102,7 +102,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(default='postgresql://filmfinderdb_user:FyljR7ewtejfvPkW2YGTSFL33sOeA1dJ@dpg-cv6vvvrtq21c73dmtra0-a.oregon-postgres.render.com/filmfinderdb', conn_max_age=600, ssl_require=True)
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
+    )
 }
 
 
