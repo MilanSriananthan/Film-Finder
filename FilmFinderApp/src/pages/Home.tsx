@@ -40,10 +40,8 @@ export default function Home() {
       try {
         pageRef.current = page;
         // Fetch top-rated movies
-        const response = await fetch(
-          `https://film-finder-8twk.onrender.com/api/movies-details/?page=${page}`
-        );
-        const data = await response.json();
+        const response = await api.get(`/api/movies-details/?page=${page}`);
+        const data = response.data;
         const allMovies: Movie[] = data.movies;
         // Fetch saved movies from the database
         const savedMoviesResponse = await api.get("/api/movies/");

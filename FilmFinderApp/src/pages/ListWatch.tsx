@@ -1,6 +1,7 @@
 import ImageCard from "../components/ImageCard";
 import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
+import api from "../api";
 
 interface Movie {
   id: number;
@@ -13,17 +14,14 @@ export default function ListWatch() {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    fetch(
-      "https://film-finder-8twk.onrender.com/api/movies/?preference=watch_later",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access")}`, // Adjust based on auth
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => setMovies(data))
-      .catch((err) => console.error("Error fetching watchlist movies:", err));
+    api
+      .get("/api/movies/?preference=watch_later")
+      .then((response) => {
+        setMovies(response.data); // Axios response data is stored in response.data
+      })
+      .catch((err) => {
+        console.error("Error fetching watchlist movies:", err);
+      });
   }, []);
 
   return (
