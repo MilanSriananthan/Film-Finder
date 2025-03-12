@@ -1,5 +1,3 @@
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
