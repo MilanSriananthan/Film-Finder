@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Movie
+from .models import Movie, MovieDetails
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,12 +18,18 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
+    movie_details = serializers.PrimaryKeyRelatedField(queryset=MovieDetails.objects.all())
+
     class Meta:
         model = Movie
-        fields = ["id", "tmdb_id", "title", "adult", "backdrop_path", "genre_ids", "original_language", "original_title", "overview", "popularity", "poster_path", "release_date", "video", "vote_average", "vote_count", "preferences"]
+        fields = ['preferences', 'movie_details']  # user is handled in the view
+        read_only_fields = ['user']  # Make user read-only as it's set automatically
 
-    def create(self, validated_data):
-        movie, created = Movie.objects.update_or_create(
-            id=validated_data["id"], defaults=validated_data
-        )
-        return movie
+    def validate_movie_details(self, value):
+        """
+        Custom validation to check if the MovieDetails object exists.
+        """
+        if not MovieDetails.objects.filter(movie_id=value.movie_id).exists():
+            raise serializers.ValidationError("Movie details not found for the provided movie_id.")
+        return value
+    

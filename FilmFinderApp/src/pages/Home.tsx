@@ -1,24 +1,25 @@
 import ImageCard from "../components/ImageCard";
 import ButtonRow from "../components/ButtonRow";
 import NavBar from "../components/NavBar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import api from "../api";
 import { Info } from "lucide-react";
 import InfoCard from "../components/InfoCard";
 
 interface Movie {
+  movie_id: number;
+  imdb_id: string;
+  tmdb_id: number;
+  title: string;
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
-  id: number;
-  tmdb_id: number;
   original_language: string;
   original_title: string;
   overview: string;
   popularity: number;
   poster_path: string;
   release_date: string;
-  title: string;
   video: boolean;
   vote_average: number;
   vote_count: number;
@@ -28,57 +29,31 @@ interface Movie {
 export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
-  const pageRef = useRef(1);
-  const [page, setPage] = useState(() => pageRef.current);
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
-    if (movies.length > 0) return;
-    setCurrentMovieIndex(0);
-    pageRef.current = page;
     const fetchMovies = async () => {
       try {
-        pageRef.current = page;
         // Fetch top-rated movies
-        const response = await api.get(`/api/movies-details/?page=${page}`);
+        const response = await api.get(`/api/movies-details/`);
         const data = response.data;
-        const allMovies: Movie[] = data.movies;
-        // Fetch saved movies from the database
-        const savedMoviesResponse = await api.get("/api/movies/");
-        const savedMovies: Movie[] = savedMoviesResponse.data;
-
-        // Get IDs of saved movies
-        const savedMovieIds = new Set(savedMovies.map((movie) => movie.id));
-
-        // Filter out already saved movies
-        const filteredMovies = allMovies.filter(
-          (movie) => !savedMovieIds.has(movie.id)
-        );
-
-        if (filteredMovies.length === 0) {
-          setTimeout(() => {
-            setPage((prevPage) => prevPage + 1);
-            setCurrentMovieIndex(0); // Delayed to prevent race conditions
-          }, 100);
-        } else {
-          setMovies(filteredMovies);
-          setCurrentMovieIndex(0);
-        }
+        const filteredMovies: Movie[] = data.movies;
+        setMovies(filteredMovies);
+        setCurrentMovieIndex(0);
       } catch (error) {
         console.error("Error fetching movies:", error);
       }
     };
 
     fetchMovies();
-  }, [page, movies.length]);
+  }, []);
 
   const nextMovie = () => {
     if (currentMovieIndex < movies.length - 1) {
       setCurrentMovieIndex(currentMovieIndex + 1);
     } else {
-      console.log("🎯 End of movies reached, fetching next page...");
-      setMovies([]); // Clear current movies
-      setPage((prevPage) => prevPage + 1); // Increment page
+      console.log("🎯 End of movies reached, fetching next set...");
+      setMovies([]);
     }
   };
 
@@ -86,10 +61,10 @@ export default function Home() {
     preferences: "liked" | "disliked" | "watch_later" | "not_watched"
   ) => {
     if (movies.length === 0) return;
-    const movie = movies[currentMovieIndex];
+    const movie: Movie = movies[currentMovieIndex];
     api
       .post("/api/movies/", {
-        ...movie,
+        movie_details: movie.movie_id,
         preferences,
       })
       .then((res) => {
