@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, MovieSerializer
+from .serializers import UserSerializer, MovieSerializer, MovieDetailsSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Movie
 import requests
@@ -87,6 +87,19 @@ class MovieListCreate(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class MovieDetailsList(generics.ListAPIView):  # Read-only view for listing movies
+    serializer_class = MovieDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        preference = self.request.query_params.get("preference", None)
+
+        # Get movies filtered by user and preference, returning only their details
+        return MovieDetails.objects.filter(
+            movie_id__in=Movie.objects.filter(user=user, preferences=preference)
+            .values_list('movie_details', flat=True))
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()

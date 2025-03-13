@@ -15,7 +15,7 @@ export default function ListWatch() {
 
   useEffect(() => {
     api
-      .get("/api/movies/?preference=watch_later")
+      .get("/api/movies/details/?preference=watch_later")
       .then((response) => {
         setMovies(response.data); // Axios response data is stored in response.data
       })

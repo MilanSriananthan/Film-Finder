@@ -15,7 +15,12 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-
+class MovieDetailsSerializer(serializers.ModelSerializer):
+    """Serializer for returning only movie details."""
+    
+    class Meta:
+        model = MovieDetails
+        fields = "__all__"  # Include all fields of MovieDetails
 
 class MovieSerializer(serializers.ModelSerializer):
     movie_details = serializers.PrimaryKeyRelatedField(queryset=MovieDetails.objects.all())
