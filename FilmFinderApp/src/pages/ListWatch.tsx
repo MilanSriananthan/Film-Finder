@@ -1,14 +1,8 @@
-import ImageCard from "../components/ImageCard";
 import NavBar from "../components/NavBar";
 import { useEffect, useState } from "react";
 import api from "../api";
-
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  release_date: string;
-}
+import { Movie } from "../types/Movie";
+import MovieCard from "../components/MovieCard";
 
 export default function ListWatch() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -33,12 +27,8 @@ export default function ListWatch() {
         </h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {movies.map((movie) => (
-            <div key={movie.id}>
-              <ImageCard
-                imageUrl={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                title={movie.title}
-                altText="A portrait-oriented image with 27:40 aspect ratio"
-              ></ImageCard>
+            <div key={movie.movie_id}>
+              <MovieCard movie={movie}></MovieCard>
             </div>
           ))}
         </div>
