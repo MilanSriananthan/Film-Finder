@@ -11,6 +11,7 @@ const ButtonRow = ({ interactionHandler }: ButtonRowProps) => {
     <>
       <div className="mt-8 flex w-full max-w-lg justify-between">
         <IconButton
+          id="liked"
           onClick={() => interactionHandler("liked")}
           icon={
             <svg className="h-8 w-8 fill-current" viewBox="0 0 20 20">
@@ -23,6 +24,7 @@ const ButtonRow = ({ interactionHandler }: ButtonRowProps) => {
           }
         />
         <IconButton
+          id="not_watched"
           onClick={() => interactionHandler("not_watched")}
           icon={
             <svg
@@ -38,6 +40,7 @@ const ButtonRow = ({ interactionHandler }: ButtonRowProps) => {
           }
         />
         <IconButton
+          id="watch_later"
           onClick={() => interactionHandler("watch_later")}
           icon={
             <svg
@@ -51,6 +54,7 @@ const ButtonRow = ({ interactionHandler }: ButtonRowProps) => {
         />
 
         <IconButton
+          id="disliked"
           onClick={() => interactionHandler("disliked")}
           icon={
             <svg

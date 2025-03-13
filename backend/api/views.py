@@ -1,22 +1,22 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics
+from rest_framework import generics, permissions
 from .serializers import UserSerializer, MovieSerializer, MovieDetailsSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 from .models import Movie
 import requests
 from django.http import JsonResponse
 from django.conf import settings
 from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
 import pandas as pd
 from api.apps import MOVIE_SIMILARITY_DF
 from django.views import View
 from django.core.paginator import Paginator
 from api.models import MovieDetails
 from api.util import get_movie_details, get_movies_for_user
-import random
+import json
+
 
 
 TMDB_API_KEY = settings.TMDB_API_KEY
@@ -124,3 +124,19 @@ class MovieListView(APIView):
         return JsonResponse({
             "movies": list(recommended_movie_details)
         })
+
+
+class DeleteUserView(APIView):
+    permission_classes = [permissions.AllowAny]  # Change this later for security
+
+    def delete(self, request):
+        username = request.data.get("username")  # Get username from request body
+        if not username:
+            return Response({"error": "username is required"}, status=400)
+
+        user = User.objects.filter(username=username).first()
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+
+        user.delete()
+        return Response({"message": "User deleted successfully"}, status=200)

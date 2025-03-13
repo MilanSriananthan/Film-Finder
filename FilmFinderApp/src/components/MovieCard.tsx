@@ -29,7 +29,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
         onClick={() => setShowInfo((prev) => !prev)}
         className="absolute top-2 right-2 bg-gray-900 text-white p-2 rounded-full hover:bg-gray-700"
       >
-        <Info size={20} />
+        <Info size={20} id="info_button" />
       </button>
     </div>
   );
