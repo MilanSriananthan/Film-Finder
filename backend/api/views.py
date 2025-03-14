@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 from .serializers import UserSerializer, MovieSerializer, MovieDetailsSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 from .models import Movie
 import requests
@@ -18,7 +20,8 @@ from api.util import get_movie_details, get_movies_for_user
 import json
 
 
-
+RADARR_API_KEY = settings.RADARR_API_KEY
+RADARR_URL = settings.RADARR_URL
 TMDB_API_KEY = settings.TMDB_API_KEY
 
 def get_top_rated_movies(request):
@@ -140,3 +143,49 @@ class DeleteUserView(APIView):
 
         user.delete()
         return Response({"message": "User deleted successfully"}, status=200)
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class AddMovieToRadarrView(View):
+    def search_movie(self, title):
+        """Search for a movie by title in Radarr"""
+        url = f"{RADARR_URL}/api/v3/movie/lookup?term={title}"
+        headers = {"X-Api-Key": RADARR_API_KEY}
+        
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+
+    def add_movie(self, tmdb_id, root_folder="F:\Movies", quality_id=1):
+        """Add a movie to Radarr using TMDB ID"""
+        url = f"{RADARR_URL}/api/v3/movie"
+        headers = {"X-Api-Key": RADARR_API_KEY, "Content-Type": "application/json"}
+        
+        payload = {
+            "tmdbId": tmdb_id,
+            "qualityProfileId": quality_id,
+            "rootFolderPath": root_folder,
+            "monitored": True,
+            "addOptions": {"searchForMovie": True}
+        }
+        
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code == 201:
+            return response.json()  # Successfully added
+        else:
+            return {"error": "Failed to add movie", "details": response.json()}
+
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        """Handle POST request to search and add a movie"""
+        try:
+            data = json.loads(request.body)
+            tmdb_id = data.get("tmdbId")
+            if not tmdb_id:
+                return JsonResponse({"error": "TMDB ID not found"}, status=400)
+            add_response = self.add_movie(tmdb_id)
+            return JsonResponse(add_response, status=200)
+        
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)

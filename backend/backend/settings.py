@@ -75,10 +75,9 @@ MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 ROOT_URLCONF = 'backend.urls'
 
-CORS_ALLOWED_ORIGINS = [
-    "https://film-finder-j958bexiv-milansriananthans-projects.vercel.app",  # Add your Vercel domain here
-]
-
+CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
+# "https://film-finder-j958bexiv-milansriananthans-projects.vercel.app"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -154,3 +153,5 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+RADARR_API_KEY = os.getenv("RADARR_API_KEY")
+RADARR_URL = os.getenv("RADARR_URL")
