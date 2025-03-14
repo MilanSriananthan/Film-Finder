@@ -18,6 +18,7 @@ from django.core.paginator import Paginator
 from api.models import MovieDetails
 from api.util import get_movie_details, get_movies_for_user
 import json
+from rest_framework.pagination import PageNumberPagination
 
 
 RADARR_API_KEY = settings.RADARR_API_KEY
@@ -100,9 +101,25 @@ class MovieDetailsList(generics.ListAPIView):  # Read-only view for listing movi
         preference = self.request.query_params.get("preference", None)
 
         # Get movies filtered by user and preference, returning only their details
-        return MovieDetails.objects.filter(
-            movie_id__in=Movie.objects.filter(user=user, preferences=preference)
-            .values_list('movie_details', flat=True))
+        movie_queryset = Movie.objects.filter(user=user)
+
+        if preference:
+            movie_queryset = movie_queryset.filter(preferences=preference)
+
+        return MovieDetails.objects.filter(movie_id__in=movie_queryset.values_list('movie_details', flat=True))
+    
+class MovieDetailsPagination(PageNumberPagination):
+    page_size = 20  # Number of movies per page
+    page_size_query_param = "page_size"  # Allow clients to request different sizes
+    max_page_size = 100  # Prevent excessive queries
+
+class MovieDetailsAll(generics.ListAPIView):
+    serializer_class = MovieDetailsSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = MovieDetailsPagination  # Enable pagination
+
+    def get_queryset(self):
+        return MovieDetails.objects.all()
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()

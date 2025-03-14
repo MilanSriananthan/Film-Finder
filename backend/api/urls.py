@@ -9,4 +9,5 @@ urlpatterns = [
     path("movies/recommendations/", views.recommend_movies, name="recomendations-movies"),
     path("movies-details/", views.MovieListView.as_view(), name="movie-list"),
     path("add-movie/", views.AddMovieToRadarrView.as_view(), name="add_movie"),
+    path("movies/all/", views.MovieDetailsAll.as_view(), name="movie-list"),
 ]

@@ -13,7 +13,8 @@ import emptyUserImage from "../assets/empty_user.png";
 
 const navigation = [
   { name: "Finder", href: "/" },
-  { name: "watchList", href: "/watchlist" },
+  { name: "Watch Later", href: "/watchlist" },
+  { name: "All Movies", href: "/movies" },
 ];
 
 function classNames(...classes: (string | undefined | null | false)[]) {
