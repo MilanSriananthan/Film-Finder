@@ -5,8 +5,12 @@ import api from "../api";
 import LoadingIndicator from "../components/LoadingIndicator";
 
 export default function SignUpPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [Radarr_URL, setRadarr_URL] = useState("");
+  const [Radarr_API_Key, setRadarr_API_Key] = useState("");
+  const [Radarr_Root_Folder, setRadarr_Root_Folder] = useState("");
+  const [Radarr_Quality_Profile, setRadarr_Quality_Profile] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -27,15 +31,19 @@ export default function SignUpPage() {
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("username", username);
-      formData.append("password", password);
-      if (photo) {
-        formData.append("photo", photo);
-      }
+      const requestData = {
+        username: email,
+        password: password,
+        radarr_settings: {
+          Radarr_URL: Radarr_URL,
+          Radarr_API_Key: Radarr_API_Key,
+          Radarr_Root_Folder: Radarr_Root_Folder,
+          Radarr_Quality_Profile: Radarr_Quality_Profile,
+        },
+      };
 
-      await api.post(route, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      await api.post(route, requestData, {
+        headers: { "Content-Type": "application/json" },
       });
 
       navigate("/login");
@@ -61,19 +69,19 @@ export default function SignUpPage() {
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-4">
                 <label
-                  htmlFor="username"
+                  htmlFor="email"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Username
+                  Email Address
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                     <input
-                      id="username"
-                      name="username"
+                      id="Email Address"
+                      name="email"
                       type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
                     />
                   </div>
@@ -131,6 +139,92 @@ export default function SignUpPage() {
                   >
                     Change
                   </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="Radarr URL"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
+                  Radarr URL
+                </label>
+                <div className="mt-2">
+                  <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                    <input
+                      id="Radarr URL"
+                      name="Radarr URL"
+                      type="text"
+                      value={Radarr_URL}
+                      onChange={(e) => setRadarr_URL(e.target.value)}
+                      className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="Radarr API Key"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
+                  Radarr API Key
+                </label>
+                <div className="mt-2">
+                  <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                    <input
+                      id="Radarr API Key"
+                      name="Radarr API Key"
+                      type="text"
+                      value={Radarr_API_Key}
+                      onChange={(e) => setRadarr_API_Key(e.target.value)}
+                      className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="Radarr Root Folder"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
+                  Radarr Root Folder
+                </label>
+                <div className="mt-2">
+                  <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                    <input
+                      id="Radarr Root Folder"
+                      name="Radarr Root Folder"
+                      type="text"
+                      value={Radarr_Root_Folder}
+                      onChange={(e) => setRadarr_Root_Folder(e.target.value)}
+                      className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="Radarr Quality Profile"
+                  className="block text-sm/6 font-medium text-gray-900"
+                >
+                  Radarr Quality Profile
+                </label>
+                <div className="mt-2">
+                  <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                    <input
+                      id="Radarr Quality Profile"
+                      name="Radarr Quality Profile"
+                      type="text"
+                      value={Radarr_Quality_Profile}
+                      onChange={(e) =>
+                        setRadarr_Quality_Profile(e.target.value)
+                      }
+                      className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

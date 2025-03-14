@@ -145,7 +145,8 @@ class DeleteUserView(APIView):
         return Response({"message": "User deleted successfully"}, status=200)
     
 @method_decorator(csrf_exempt, name='dispatch')
-class AddMovieToRadarrView(View):
+class AddMovieToRadarrView(APIView):
+    permission_classes = [IsAuthenticated]
     def search_movie(self, title):
         """Search for a movie by title in Radarr"""
         url = f"{RADARR_URL}/api/v3/movie/lookup?term={title}"
@@ -157,17 +158,17 @@ class AddMovieToRadarrView(View):
         else:
             return None
 
-    def add_movie(self, tmdb_id, root_folder="F:\Movies", quality_id=1):
+    def add_movie(self, tmdb_id, radarr_settings):
         """Add a movie to Radarr using TMDB ID"""
-        url = f"{RADARR_URL}/api/v3/movie"
-        headers = {"X-Api-Key": RADARR_API_KEY, "Content-Type": "application/json"}
+        url = f"{radarr_settings.Radarr_URL}/api/v3/movie"
+        headers = {"X-Api-Key": radarr_settings.Radarr_API_Key, "Content-Type": "application/json"}
         
         payload = {
             "tmdbId": tmdb_id,
-            "qualityProfileId": quality_id,
-            "rootFolderPath": root_folder,
+            "qualityProfileId": radarr_settings.Radarr_Quality_Profile,
+            "rootFolderPath": radarr_settings.Radarr_Root_Folder,
             "monitored": True,
-            "addOptions": {"searchForMovie": True}
+            #"addOptions": {"searchForMovie": True}
         }
         
         response = requests.post(url, json=payload, headers=headers)
@@ -178,13 +179,13 @@ class AddMovieToRadarrView(View):
 
     @method_decorator(csrf_exempt)
     def post(self, request):
-        """Handle POST request to search and add a movie"""
+        radarr_settings = request.user.radarr_settings
         try:
             data = json.loads(request.body)
             tmdb_id = data.get("tmdbId")
             if not tmdb_id:
                 return JsonResponse({"error": "TMDB ID not found"}, status=400)
-            add_response = self.add_movie(tmdb_id)
+            add_response = self.add_movie(tmdb_id, radarr_settings)
             return JsonResponse(add_response, status=200)
         
         except Exception as e:

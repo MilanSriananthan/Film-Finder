@@ -1,18 +1,25 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Movie, MovieDetails
+from .models import Movie, MovieDetails, RadarrSettings
 
+class RadarrSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RadarrSettings
+        fields = ["Radarr_URL", "Radarr_API_Key", "Radarr_Root_Folder", "Radarr_Quality_Profile"]
 
 class UserSerializer(serializers.ModelSerializer):
+    radarr_settings = RadarrSettingsSerializer(write_only=True)
     class Meta:
         model = User
-        fields = ["id", "username", "password"]
+        fields = ["id", "username", "password", "radarr_settings"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        print(validated_data)
+        radarr_data = validated_data.pop("radarr_settings", {})
         user = User.objects.create_user(**validated_data)
+        RadarrSettings.objects.create(user=user, **radarr_data)
         return user
+
 
 
 class MovieDetailsSerializer(serializers.ModelSerializer):

@@ -42,3 +42,9 @@ class Movie(models.Model):
         return f"Movie {self.movie_details} - {self.preferences} ({self.user.username})"
     
 
+class RadarrSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="radarr_settings")
+    Radarr_URL = models.URLField()
+    Radarr_API_Key = models.CharField(max_length=255)
+    Radarr_Root_Folder = models.CharField(max_length=255)
+    Radarr_Quality_Profile = models.CharField(max_length=255)
