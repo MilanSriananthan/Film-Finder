@@ -15,6 +15,7 @@ const navigation = [
   { name: "Finder", href: "/" },
   { name: "Watch Later", href: "/watchlist" },
   { name: "All Movies", href: "/movies" },
+  { name: "Search", href: "/search" },
 ];
 
 function classNames(...classes: (string | undefined | null | false)[]) {

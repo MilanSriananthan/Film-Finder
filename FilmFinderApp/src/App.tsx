@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import SignUpPage from "./pages/SignUpPage";
 import ListWatch from "./pages/ListWatch";
 import AllMovies from "./pages/AllMovies";
+import SearchView from "./pages/SearchView";
 
 function Logout() {
   localStorage.clear();
@@ -36,6 +37,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ListWatch></ListWatch>
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <SearchView></SearchView>
               </ProtectedRoute>
             }
           ></Route>

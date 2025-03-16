@@ -14,7 +14,12 @@ export default function AllMovies() {
       .get(`/api/movies/all/?page=${page}`)
       .then((response) => {
         if (response.data.results) {
-          setMovies((prevMovies) => [...prevMovies, ...response.data.results]); // Append new movies
+          setMovies(
+            (prevMovies) =>
+              page === 1
+                ? response.data.results
+                : [...prevMovies, ...response.data.results] // Reset if page is 1
+          );
           setHasMore(response.data.next !== null); // Check if more pages exist
         }
       })

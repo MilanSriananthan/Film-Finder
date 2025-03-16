@@ -40,6 +40,21 @@ def get_top_rated_movies(request):
     else:
         return JsonResponse({"error": "Failed to fetch data"})
     
+def search_for_movie(request):
+    query = request.GET.get("query")
+    url = f"https://api.themoviedb.org/3/search/movie?query={query}"
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {TMDB_API_KEY}",
+    }
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        return JsonResponse(data["results"], safe=False)
+    else:
+        return JsonResponse({"error": "Failed to fetch data"})
+    
     
 def recommend_movies(user):
     """
@@ -119,7 +134,11 @@ class MovieDetailsAll(generics.ListAPIView):
     pagination_class = MovieDetailsPagination  # Enable pagination
 
     def get_queryset(self):
-        return MovieDetails.objects.all()
+        queryset = MovieDetails.objects.all()
+        title = self.request.query_params.get('title', None)
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+        return queryset
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
