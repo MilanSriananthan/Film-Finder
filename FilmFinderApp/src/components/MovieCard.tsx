@@ -2,7 +2,8 @@ import { useState } from "react";
 import ImageCard from "./ImageCard";
 import InfoCard from "./InfoCard";
 import { Movie } from "../types/Movie";
-import { Info } from "lucide-react"; // Info icon
+import { Info, Download } from "lucide-react";
+import api from "../api";
 
 interface MovieCardProps {
   movie: Movie;
@@ -10,6 +11,15 @@ interface MovieCardProps {
 
 export default function MovieCard({ movie }: MovieCardProps) {
   const [showInfo, setShowInfo] = useState(false);
+  const handleDownload = async () => {
+    try {
+      await api.post("/api/add-movie/", {
+        tmdbId: movie.tmdb_id,
+      });
+    } catch (error) {
+      console.error("Error sending movie to Radarr:", error);
+    }
+  };
 
   return (
     <div className="relative">
@@ -23,8 +33,12 @@ export default function MovieCard({ movie }: MovieCardProps) {
       ) : (
         <InfoCard movie={movie} />
       )}
-
-      {/* Info button stays visible in both views */}
+      <button
+        onClick={handleDownload}
+        className="absolute top-2 left-2 bg-gray-900 text-white p-2 rounded-full hover:bg-gray-700"
+      >
+        <Download size={20} />
+      </button>
       <button
         onClick={() => setShowInfo((prev) => !prev)}
         className="absolute top-2 right-2 bg-gray-900 text-white p-2 rounded-full hover:bg-gray-700"

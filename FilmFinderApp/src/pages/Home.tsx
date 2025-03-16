@@ -26,17 +26,6 @@ export default function Home() {
     fetchMovies();
   }, []);
 
-  const triggerRadarrRequest = async () => {
-    console.log("🎯 Sending movie to Radarr...");
-    try {
-      await api.post("/api/add-movie/", {
-        tmdbId: movies[currentMovieIndex].tmdb_id,
-      });
-    } catch (error) {
-      console.error("Error sending movie to Radarr:", error);
-    }
-  };
-
   const nextMovie = () => {
     if (currentMovieIndex < movies.length - 1) {
       setCurrentMovieIndex(currentMovieIndex + 1);
@@ -58,11 +47,6 @@ export default function Home() {
       })
       .then((res) => {
         if (res.status !== 201) alert("Failed to interact with movie.");
-        else {
-          if (preferences === "watch_later") {
-            triggerRadarrRequest();
-          }
-        }
       })
       .catch((err) => alert(err));
     nextMovie();

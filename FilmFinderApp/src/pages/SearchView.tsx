@@ -16,8 +16,12 @@ export default function SearchView() {
       })
       .then((response) => {
         if (response.data) {
-          setExternalMovies(response.data);
-          console.log(externalMovies);
+          const mappedMovies = response.data.map(({ id, ...movie }: any) => ({
+            ...movie,
+            tmdb_id: id,
+          }));
+          setExternalMovies(mappedMovies);
+          console.log(mappedMovies);
         }
       })
       .catch((err) => {
@@ -31,8 +35,7 @@ export default function SearchView() {
       .get(`/api/movies/all/?title=${query}`)
       .then((response) => {
         if (response.data.results) {
-          setMovies(response.data.results); // Directly set the movies response
-          console.log(response.data.results); // Log the fetched results
+          setMovies(response.data.results);
         }
       })
       .catch((err) => {

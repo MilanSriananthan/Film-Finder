@@ -27,7 +27,7 @@ TMDB_API_KEY = settings.TMDB_API_KEY
 
 def get_top_rated_movies(request):
     page = request.GET.get('page', 1)
-    url = f"https://api.themoviedb.org/3/movie/top_rated?language=en-US&page={page}"
+    url = f"https://api.themoviedb.org/3/movie/top_rated?include_adult=false&language=en-US&page={page}"
     headers = {
         "accept": "application/json",
         "Authorization": f"Bearer {TMDB_API_KEY}",
