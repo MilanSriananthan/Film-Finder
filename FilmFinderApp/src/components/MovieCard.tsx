@@ -11,11 +11,13 @@ interface MovieCardProps {
 
 export default function MovieCard({ movie }: MovieCardProps) {
   const [showInfo, setShowInfo] = useState(false);
+  const [clicked, setClicked] = useState(false);
   const handleDownload = async () => {
     try {
       await api.post("/api/add-movie/", {
         tmdbId: movie.tmdb_id,
       });
+      setClicked(true);
     } catch (error) {
       console.error("Error sending movie to Radarr:", error);
     }
@@ -35,7 +37,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
       )}
       <button
         onClick={handleDownload}
-        className="absolute top-2 left-2 bg-gray-900 text-white p-2 rounded-full hover:bg-gray-700"
+        className={`absolute top-2 left-2 p-2 rounded-full 
+          ${clicked ? "bg-green-500" : "bg-gray-900"} 
+          text-white hover:bg-gray-700`}
       >
         <Download size={20} />
       </button>

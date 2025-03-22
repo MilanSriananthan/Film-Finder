@@ -204,7 +204,7 @@ class AddMovieToRadarrView(APIView):
             "qualityProfileId": radarr_settings.Radarr_Quality_Profile,
             "rootFolderPath": radarr_settings.Radarr_Root_Folder,
             "monitored": True,
-            #"addOptions": {"searchForMovie": True}
+            "addOptions": {"searchForMovie": True}
         }
         
         response = requests.post(url, json=payload, headers=headers)
