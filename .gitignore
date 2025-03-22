@@ -1,5 +1,6 @@
 # Node modules
 /node_modules/
+/backend/staticfiles/
 
 # Build output (Vite)
 /dist/
