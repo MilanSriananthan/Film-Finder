@@ -19,11 +19,21 @@ from api.models import MovieDetails
 from api.util import get_movie_details, get_movies_for_user
 import json
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
+from google.oauth2 import id_token
+from google.auth.transport import requests
+import os
 
 
 RADARR_API_KEY = settings.RADARR_API_KEY
 RADARR_URL = settings.RADARR_URL
 TMDB_API_KEY = settings.TMDB_API_KEY
+
+User = get_user_model()
 
 def get_top_rated_movies(request):
     page = request.GET.get('page', 1)
@@ -226,3 +236,57 @@ class AddMovieToRadarrView(APIView):
         
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+
+class GoogleLoginView(APIView):
+    permission_classes = []  # Allow unauthenticated access
+
+    def post(self, request):
+        try:
+            credential = request.data.get('credential')
+            if not credential:
+                return Response({'error': 'No credential provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Verify the Google token
+            try:
+                idinfo = id_token.verify_oauth2_token(
+                    credential,
+                    requests.Request(),
+                    os.getenv('GOOGLE_CLIENT_ID')
+                )
+            except ValueError as e:
+                print(f"Token verification failed: {str(e)}")
+                return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Get user email from token
+            email = idinfo['email']
+            print(f"Google login attempt for email: {email}")
+
+            # Check if user exists
+            try:
+                user = User.objects.get(username=email)
+                print(f"Found existing user: {email}")
+            except User.DoesNotExist:
+                print(f"User not found: {email}")
+                return Response({
+                    'error': 'Account not found. Please sign up first.',
+                    'email': email
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # Generate JWT tokens
+            try:
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                refresh_token = str(refresh)
+                print(f"Generated tokens for user: {email}")
+            except Exception as e:
+                print(f"Error generating tokens: {str(e)}")
+                return Response({'error': 'Error generating tokens'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response({
+                'access': access_token,
+                'refresh': refresh_token
+            })
+
+        except Exception as e:
+            print(f"Unexpected error in Google login: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

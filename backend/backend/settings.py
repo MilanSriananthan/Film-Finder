@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-(zd4z5&%1t4&gzmr9ayn4-_&a5#-$us+&r-&p0@&rmrosbixwh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -76,8 +76,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'backend.urls'
 
-CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
-CSRF_TRUSTED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
 # "https://film-finder-j958bexiv-milansriananthans-projects.vercel.app"
 TEMPLATES = [
     {
@@ -153,8 +151,34 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWS_CREDENTIALS = True
+
+# CORS settings
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 RADARR_API_KEY = os.getenv("RADARR_API_KEY")

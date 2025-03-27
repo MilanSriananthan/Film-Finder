@@ -13,6 +13,7 @@ import SignUpPage from "./pages/SignUpPage";
 import ListWatch from "./pages/ListWatch";
 import AllMovies from "./pages/AllMovies";
 import SearchView from "./pages/SearchView";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function Logout() {
   localStorage.clear();
@@ -26,7 +27,7 @@ function Logout() {
 
 function App() {
   return (
-    <>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
           <Route path="/login" element={<Login></Login>}></Route>
@@ -67,7 +68,7 @@ function App() {
           <Route path="*" element={<NotFound></NotFound>}></Route>
         </Routes>
       </Router>
-    </>
+    </GoogleOAuthProvider>
   );
 }
 

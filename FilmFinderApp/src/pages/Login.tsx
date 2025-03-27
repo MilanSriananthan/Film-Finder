@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useState } from "react";
 import LoadingIndicator from "../components/LoadingIndicator";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -11,6 +12,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const route = "/api/token/";
+
   const handleSignUpClick = () => {
     navigate("/signup");
   };
@@ -26,6 +28,31 @@ export default function Login() {
       navigate("/");
     } catch (error) {
       alert(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setLoading(true);
+    try {
+      const res = await api.post("/api/google-login/", {
+        credential: credentialResponse.credential,
+      });
+      localStorage.setItem(ACCESS_TOKEN, res.data.access);
+      localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+      navigate("/");
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        alert(
+          "Account not found. Please sign up first before using Google Sign-In."
+        );
+      } else {
+        alert(
+          error.response?.data?.error ||
+            "An error occurred during Google Sign-In."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -120,7 +147,34 @@ export default function Login() {
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm/6 text-gray-500">
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => {
+                  console.error("Google Login Failed");
+                  alert("Google login failed. Please try again.");
+                }}
+                useOneTap={false}
+                theme="outline"
+                size="large"
+                text="signin_with"
+              />
+            </div>
+          </div>
+
+          <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{" "}
             <button
               className="font-semibold text-indigo-600 hover:text-indigo-500"
